@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CGPA Calculator - GradeCalc India | Calculate Cumulative GPA for Indian Universities</title>
+  <meta name="description" content="Free CGPA Calculator for all Indian universities. Enter SGPA and credits for each semester to calculate your Cumulative Grade Point Average.">
+  <meta name="keywords" content="CGPA calculator, cumulative GPA, Indian university CGPA, VTU CGPA, Anna University CGPA, semester wise CGPA">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://gradecalcindia.netlify.app/cgpa.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7627314206553844"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">GC</div>
+        <span>GradeCalc India</span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html">SGPA</a>
+        <a href="cgpa.html" class="active">CGPA</a>
+        <a href="converter.html">Converter</a>
+        <a href="target.html">Target CGPA</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode"></button>
+        <button class="menu-toggle" onclick="toggleMenu()">&#9776;</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>CGPA Calculator</h1>
+      <p>Calculate your Cumulative Grade Point Average by entering SGPA and credits for each semester.</p>
+    </section>
+
+    <div class="ad-space" id="ad-top"><ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-7627314206553844"
+        data-ad-slot="auto"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+
+    <!-- University Selection -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="icon blue">&#x1F393;</span>
+          Select Your University
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">University / Grading System</label>
+        <select class="form-select" id="uniSelectCGPA"></select>
+      </div>
+      <div id="gradeRefCGPA"></div>
+    </div>
+
+    <!-- Semester Entry -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="icon green">&#x1F4C5;</span>
+          Enter Semester Details
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="addSemester()">+ Add Semester</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns: auto 1fr 1fr 50px; gap:12px; padding:0 0 8px; font-weight:600; font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">
+        <div style="width:36px; text-align:center;">Sem</div>
+        <div>SGPA</div>
+        <div>Credits</div>
+        <div></div>
+      </div>
+
+      <div id="semesterContainer"></div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary btn-lg" onclick="calculateCGPA()">Calculate CGPA</button>
+        <button class="btn btn-secondary" onclick="resetCGPA()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-panel" id="cgpaResult">
+      <div class="result-label">Your CGPA</div>
+      <div class="result-value" id="cgpaValue">0.00</div>
+      <div class="result-sublabel" id="cgpaClassification">-</div>
+      <div class="result-details">
+        <div class="result-detail-item">
+          <div class="value" id="cgpaPercentage">0%</div>
+          <div class="label">Percentage</div>
+        </div>
+        <div class="result-detail-item">
+          <div class="value" id="cgpaTotalCredits">0</div>
+          <div class="label">Total Credits</div>
+        </div>
+        <div class="result-detail-item">
+          <div class="value" id="cgpaSemesterCount">0</div>
+          <div class="label">Semesters</div>
+        </div>
+      </div>
+      <div class="btn-group" style="justify-content:center; margin-top:20px;">
+        <button class="btn btn-secondary btn-sm" onclick="printResult()" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3);">&#x1F5A8; Print</button>
+        <button class="btn btn-secondary btn-sm" onclick="shareResult('cgpa')" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3);">&#x1F4CB; Copy</button>
+      </div>
+    </div>
+
+    <div class="ad-space" id="ad-middle"><ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-7627314206553844"
+        data-ad-slot="auto"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+
+    <!-- How to Use -->
+    <div class="card">
+      <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;">How to Calculate CGPA</h2>
+      <p class="text-small" style="color:var(--text-secondary); line-height:1.8;">
+        <strong>CGPA (Cumulative Grade Point Average)</strong> represents your overall academic performance across all semesters. It is a weighted average of your SGPA values, weighted by the total credits in each semester.
+      </p>
+      <div class="info-box mt-1 mb-2">
+        <strong>CGPA = &Sigma;(SGPA<sub>i</sub> × Credits<sub>i</sub>) / &Sigma;(Credits<sub>i</sub>)</strong>
+      </div>
+      <p class="text-small" style="color:var(--text-secondary); line-height:1.8;">
+        For instance, if Semester 1 has SGPA 8.5 with 24 credits and Semester 2 has SGPA 7.8 with 22 credits, your CGPA would be: (8.5×24 + 7.8×22) / (24+22) = 375.6/46 = <strong>8.17</strong>
+      </p>
+    </div>
+
+    <!-- Quick Links -->
+    <section>
+      <h2 class="text-center mb-2" style="font-size:1.3rem; font-weight:700;">More Calculators</h2>
+      <div class="feature-grid">
+        <a href="index.html" class="feature-card">
+          <div class="feature-icon" style="background:#ffedd5;color:#ea580c;">&#x1F4DD;</div>
+          <h3>SGPA Calculator</h3>
+          <p>Calculate your semester GPA subject-wise</p>
+        </a>
+        <a href="converter.html" class="feature-card">
+          <div class="feature-icon" style="background:#ede9fe;color:#7c3aed;">&#x1F504;</div>
+          <h3>CGPA to Percentage</h3>
+          <p>Convert CGPA to percentage and vice versa</p>
+        </a>
+        <a href="target.html" class="feature-card">
+          <div class="feature-icon" style="background:#d1fae5;color:#059669;">&#x1F3AF;</div>
+          <h3>Target CGPA</h3>
+          <p>Find what SGPA you need next semester</p>
+        </a>
+      </div>
+    </section>
+
+    <div class="ad-space" id="ad-bottom"><ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-7627314206553844"
+        data-ad-slot="auto"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-section">
+        <h4>GradeCalc India</h4>
+        <p>Free, accurate CGPA and SGPA calculator for all Indian university students.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Calculators</h4>
+        <a href="index.html">SGPA Calculator</a>
+        <a href="cgpa.html">CGPA Calculator</a>
+        <a href="converter.html">CGPA ↔ Percentage</a>
+        <a href="target.html">Target CGPA</a>
+      </div>
+      <div class="footer-section">
+        <h4>Universities</h4>
+        <a href="index.html">VTU Calculator</a>
+        <a href="index.html">Anna University Calculator</a>
+        <a href="index.html">JNTUH Calculator</a>
+        <a href="index.html">Mumbai University Calculator</a>
+      </div>
+      <div class="footer-section">
+        <h4>Legal</h4>
+        <a href="about.html">About Us</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 GradeCalc India. All rights reserved. | Made for Indian students
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => { initCGPA(); });
+  </script>
+</body>
+</html>

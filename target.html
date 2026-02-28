@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Target CGPA Calculator - GradeCalc India | Plan Your Academic Goals</title>
+  <meta name="description" content="Find out what SGPA you need in your next semester to achieve your target CGPA. Plan your academic goals with our Target CGPA Calculator.">
+  <meta name="keywords" content="target CGPA calculator, required SGPA, academic planner, CGPA goal, semester planning, Indian university">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://gradecalcindia.netlify.app/target.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7627314206553844"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">GC</div>
+        <span>GradeCalc India</span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html">SGPA</a>
+        <a href="cgpa.html">CGPA</a>
+        <a href="converter.html">Converter</a>
+        <a href="target.html" class="active">Target CGPA</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode"></button>
+        <button class="menu-toggle" onclick="toggleMenu()">&#9776;</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <section class="hero">
+      <h1>Target CGPA Calculator</h1>
+      <p>Find out what SGPA you need in your next semester to reach your desired CGPA. Plan ahead and stay on track!</p>
+    </section>
+
+    <div class="ad-space" id="ad-top"><ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-7627314206553844"
+        data-ad-slot="auto"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+
+    <!-- University Selection -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="icon blue">&#x1F393;</span>
+          Select Your University
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">University / Grading System</label>
+        <select class="form-select" id="uniSelectTarget"></select>
+      </div>
+      <div id="gradeRefTarget"></div>
+    </div>
+
+    <!-- Target Calculator -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="icon green">&#x1F3AF;</span>
+          Enter Your Details
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Current CGPA</label>
+          <input type="number" class="form-input" id="currentCGPA" placeholder="e.g. 7.5" min="0" max="10" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Completed Credits (so far)</label>
+          <input type="number" class="form-input" id="completedCredits" placeholder="e.g. 96" min="1" max="500">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Target CGPA</label>
+          <input type="number" class="form-input" id="targetCGPA" placeholder="e.g. 8.0" min="0" max="10" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Next Semester Credits</label>
+          <input type="number" class="form-input" id="nextCredits" placeholder="e.g. 24" min="1" max="50">
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary btn-lg" onclick="calculateTarget()">Calculate Required SGPA</button>
+        <button class="btn btn-secondary" onclick="resetTarget()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-panel" id="targetResult">
+      <div class="result-label">Required SGPA for Next Semester</div>
+      <div class="result-value" id="targetValue">0.00</div>
+      <div class="result-sublabel" id="targetMessage">-</div>
+      <div class="result-details" id="targetDetails"></div>
+    </div>
+
+    <div class="ad-space" id="ad-middle"><ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-7627314206553844"
+        data-ad-slot="auto"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+
+    <!-- How it Works -->
+    <div class="card">
+      <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;">How Target CGPA Works</h2>
+      <p class="text-small" style="color:var(--text-secondary); line-height:1.8;">
+        The Target CGPA calculator uses the reverse CGPA formula to find out what SGPA you need in your next semester:
+      </p>
+      <div class="info-box mt-1 mb-2">
+        <strong>Required SGPA = (Target CGPA × Total Credits - Current CGPA × Completed Credits) / Next Semester Credits</strong>
+      </div>
+      <p class="text-small" style="color:var(--text-secondary); line-height:1.8;">
+        <strong>Example:</strong> If your current CGPA is 7.5 with 96 completed credits, and you want a target CGPA of 8.0, with 24 credits next semester:
+        Required SGPA = (8.0 × 120 - 7.5 × 96) / 24 = (960 - 720) / 24 = <strong>10.0</strong>
+      </p>
+      <p class="text-small" style="color:var(--text-secondary); line-height:1.8; margin-top:8px;">
+        The calculator will tell you if your target is achievable or if the required SGPA exceeds the maximum possible grade point.
+      </p>
+    </div>
+
+    <!-- Tips -->
+    <div class="card">
+      <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;">Tips to Improve Your CGPA</h2>
+      <ul style="padding-left:20px;">
+        <li class="text-small" style="color:var(--text-secondary); line-height:1.8; margin-bottom:8px;">Focus on subjects with higher credit weightage for maximum impact on CGPA</li>
+        <li class="text-small" style="color:var(--text-secondary); line-height:1.8; margin-bottom:8px;">Aim for consistency rather than extreme fluctuations between semesters</li>
+        <li class="text-small" style="color:var(--text-secondary); line-height:1.8; margin-bottom:8px;">Start early in your degree - it is harder to raise CGPA in later semesters</li>
+        <li class="text-small" style="color:var(--text-secondary); line-height:1.8; margin-bottom:8px;">Track your progress regularly using this calculator to stay on target</li>
+      </ul>
+    </div>
+
+    <!-- Quick Links -->
+    <section class="mt-2">
+      <h2 class="text-center mb-2" style="font-size:1.3rem; font-weight:700;">More Calculators</h2>
+      <div class="feature-grid">
+        <a href="index.html" class="feature-card">
+          <div class="feature-icon" style="background:#ffedd5;color:#ea580c;">&#x1F4DD;</div>
+          <h3>SGPA Calculator</h3>
+          <p>Calculate your semester GPA subject-wise</p>
+        </a>
+        <a href="cgpa.html" class="feature-card">
+          <div class="feature-icon" style="background:#dbeafe;color:#2563eb;">&#x1F4CA;</div>
+          <h3>CGPA Calculator</h3>
+          <p>Calculate cumulative GPA across semesters</p>
+        </a>
+        <a href="converter.html" class="feature-card">
+          <div class="feature-icon" style="background:#ede9fe;color:#7c3aed;">&#x1F504;</div>
+          <h3>CGPA to Percentage</h3>
+          <p>Convert CGPA to percentage and vice versa</p>
+        </a>
+      </div>
+    </section>
+
+    <div class="ad-space" id="ad-bottom"><ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-7627314206553844"
+        data-ad-slot="auto"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-section">
+        <h4>GradeCalc India</h4>
+        <p>Free, accurate CGPA and SGPA calculator for all Indian university students.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Calculators</h4>
+        <a href="index.html">SGPA Calculator</a>
+        <a href="cgpa.html">CGPA Calculator</a>
+        <a href="converter.html">CGPA ↔ Percentage</a>
+        <a href="target.html">Target CGPA</a>
+      </div>
+      <div class="footer-section">
+        <h4>Legal</h4>
+        <a href="about.html">About Us</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 GradeCalc India. All rights reserved. | Made for Indian students
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => { initTarget(); });
+  </script>
+</body>
+</html>
