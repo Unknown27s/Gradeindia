@@ -116,6 +116,14 @@
       </div>
     </div>
 
+    <!-- Chart Panel -->
+    <div class="card fade-in" id="cgpaChartCard" style="display:none; margin-top: 24px;">
+      <h3 style="text-align:center; margin-bottom: 20px; font-size: 1.15rem; color: var(--text);">Semester Progress</h3>
+      <div style="height: 300px; width: 100%;">
+        <canvas id="cgpaChart"></canvas>
+      </div>
+    </div>
+
     <div class="ad-space" id="ad-middle"><ins class="adsbygoogle"
         style="display:block"
         data-ad-client="ca-pub-7627314206553844"
@@ -202,6 +210,7 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
   <script>

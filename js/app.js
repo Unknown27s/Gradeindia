@@ -276,6 +276,11 @@ function calculateSGPA() {
   });
 
   showToast('SGPA calculated successfully!');
+
+  // Trigger confetti for great scores!
+  if (sgpa >= maxPoint * 0.85) {
+    triggerConfetti();
+  }
 }
 
 function resetSGPA() {
@@ -357,7 +362,10 @@ function calculateCGPA() {
   let semesterCount = 0;
   let hasError = false;
 
-  rows.forEach(row => {
+  const labels = [];
+  const chartData = [];
+
+  rows.forEach((row, index) => {
     const sgpa = parseFloat(row.querySelector('.sem-sgpa')?.value);
     const credits = parseFloat(row.querySelector('.sem-credits')?.value);
 
@@ -371,6 +379,9 @@ function calculateCGPA() {
       hasError = true;
       return;
     }
+
+    labels.push(`Sem ${index + 1}`);
+    chartData.push(sgpa);
 
     totalWeightedPoints += sgpa * credits;
     totalCredits += credits;
@@ -408,7 +419,16 @@ function calculateCGPA() {
     date: new Date().toLocaleDateString()
   });
 
+  if (typeof renderCGPAChart === 'function') {
+    renderCGPAChart(labels, chartData, maxPoint);
+  }
+
   showToast('CGPA calculated successfully!');
+
+  // Trigger confetti for great scores!
+  if (cgpa >= maxPoint * 0.85) {
+    triggerConfetti();
+  }
 }
 
 function resetCGPA() {
@@ -605,6 +625,94 @@ function saveToHistory(type, data) {
   }
 }
 
+// ---- History UI & Modal ----
+function injectHistoryUI() {
+  const headerActions = document.querySelector('.header-actions');
+  if (headerActions) {
+    const historyBtn = document.createElement('button');
+    historyBtn.className = 'history-toggle';
+    historyBtn.innerHTML = '&#128338;'; // Clock icon
+    historyBtn.title = 'View Recent Calculations';
+    historyBtn.onclick = toggleHistory;
+    headerActions.insertBefore(historyBtn, headerActions.firstChild);
+  }
+
+  const modalHTML = `
+    <div id="historyModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text);">Saved Calculations</h3>
+          <button class="modal-close" onclick="toggleHistory()">&times;</button>
+        </div>
+        <div class="modal-body" id="historyList"></div>
+        <div class="modal-footer" style="text-align: right; padding-top: 10px;">
+          <button class="btn btn-secondary btn-sm" onclick="clearHistory()">Clear History</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function toggleHistory() {
+  const modal = document.getElementById('historyModal');
+  if (modal) {
+    modal.classList.toggle('show');
+    if (modal.classList.contains('show')) {
+      renderHistory();
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+}
+
+function renderHistory() {
+  const historyList = document.getElementById('historyList');
+  if (!historyList) return;
+
+  let history = [];
+  try { history = JSON.parse(localStorage.getItem('calcHistory') || '[]'); } catch(e) {}
+
+  if (history.length === 0) {
+    historyList.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--text-muted);">No recent calculations found.</div>';
+    return;
+  }
+
+  let html = '';
+  history.forEach(item => {
+    const isSgpa = item.type === 'sgpa';
+    const tagColor = isSgpa ? 'var(--primary)' : 'var(--secondary)';
+    const tagBg = isSgpa ? 'var(--primary-light)' : 'var(--bg-input)';
+    const val = isSgpa ? item.sgpa : item.cgpa;
+    
+    html += `
+      <div class="history-item">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+          <div>
+            <span style="background: ${tagBg}; color: ${tagColor}; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+              ${item.type}
+            </span>
+            <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 8px;">${item.date}</span>
+          </div>
+          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text);">${val}</div>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-secondary);">
+          <strong>${item.university}</strong> &bull; ${item.percentage}% &bull; ${item.totalCredits} Credits
+        </div>
+      </div>
+    `;
+  });
+  
+  historyList.innerHTML = html;
+}
+
+function clearHistory() {
+  localStorage.removeItem('calcHistory');
+  renderHistory();
+  showToast('History cleared');
+}
+
 // ---- Print Result ----
 function printResult() {
   window.print();
@@ -632,7 +740,125 @@ function shareResult(type) {
   }
 }
 
+// ---- Confetti Effect ----
+function triggerConfetti() {
+  if (typeof confetti === 'function') {
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+      confetti({
+        particleCount: 5,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#4f46e5', '#0ea5e9', '#d946ef', '#10b981']
+      });
+      confetti({
+        particleCount: 5,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#4f46e5', '#0ea5e9', '#d946ef', '#10b981']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    }());
+  }
+}
+
+// ---- Chart Rendering ----
+let cgpaChartInstance = null;
+function renderCGPAChart(labels, data, maxPoint) {
+  const ctx = document.getElementById('cgpaChart');
+  if (!ctx || typeof Chart === 'undefined') return;
+
+  if (cgpaChartInstance) {
+    cgpaChartInstance.destroy();
+  }
+
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const textColor = isDark ? '#f1f5f9' : '#1e293b';
+
+  const card = document.getElementById('cgpaChartCard');
+  if (card) card.style.display = 'block';
+
+  cgpaChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'SGPA',
+        data: data,
+        borderColor: '#0ea5e9',
+        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+        borderWidth: 3,
+        pointBackgroundColor: '#d946ef',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: isDark ? '#1e293b' : '#fff',
+          titleColor: isDark ? '#f1f5f9' : '#1e293b',
+          bodyColor: isDark ? '#cbd5e1' : '#64748b',
+          borderColor: isDark ? '#334155' : '#e2e8f0',
+          borderWidth: 1,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) { return `SGPA: ${context.parsed.y}`; }
+          }
+        }
+      },
+      scales: {
+        y: { 
+          beginAtZero: false, 
+          min: Math.max(0, Math.floor(Math.min(...data) - 1)), 
+          max: maxPoint,
+          grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+          ticks: { color: textColor }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: textColor }
+        }
+      }
+    }
+  });
+}
+
 // ---- Initialize ----
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  
+  // Inject Confetti script dynamically
+  const confettiScript = document.createElement('script');
+  confettiScript.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+  document.body.appendChild(confettiScript);
+
+  // Inject History UI
+  injectHistoryUI();
+
+  // Register PropellerAds Service Worker for push notifications
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').then(function(registration) {
+        console.log('SW registration successful with scope: ', registration.scope);
+      }, function(err) {
+        console.log('SW registration failed: ', err);
+      });
+    });
+  }
 });
